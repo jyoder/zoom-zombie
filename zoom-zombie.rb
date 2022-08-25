@@ -20,7 +20,7 @@ end
 def meeting_running?
     processes = `ps aux | grep zoom`
     processes.split("\n").any? do |process|
-        process =~ %r{/Applications/zoom.us.app/Contents/Frameworks/caphost.app}
+        process =~ %r{/Applications/zoom.us.app/Contents/Frameworks/CptHost.app/Contents/MacOS/CptHost -pid \d+ -evtname CptHost\d+ -key \d+}
     end
 end
 
