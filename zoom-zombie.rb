@@ -4,7 +4,9 @@ def run(meeting_id)
     first_start = true
     while true
         if !within_core_hours?(Time.now)
-            $stdout.puts("Not within core hours")
+            $stdout.puts("Core hours ended - shutting down system")
+            shutdown_system
+            exit(0)
         elsif meeting_running?
             $stdout.puts("Meeting is running")
         else
@@ -23,6 +25,13 @@ def run(meeting_id)
 
         sleep(30)
     end
+end
+
+def shutdown_system
+    `pkill -9 -f "zoom.us"`
+    sleep(5)
+    
+    `osascript -e 'tell application "System Events" to shut down'`
 end
 
 def meeting_running?
