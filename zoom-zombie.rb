@@ -29,7 +29,7 @@ def join_meeting(meeting_id)
 end
 
 def start_zoom_video
-    `osascript start-zoom-video.scpt`
+    `osascript start-zoom-video.applescript`
 end
 
 def within_core_hours?(now)
