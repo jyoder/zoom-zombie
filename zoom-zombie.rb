@@ -2,13 +2,30 @@ require 'time'
 
 def run(meeting_id)
     first_start = true
+    was_active_today = false
+    last_check_date = today(Time.now)
+
     while true
-        if !within_core_hours?(Time.now)
-            $stdout.puts("Core hours ended - shutting down system")
-            shutdown_system
-            exit(0)
+        now = Time.now
+        current_date = today(now)
+
+        # Reset active status at the start of a new day
+        if current_date != last_check_date
+            was_active_today = false
+            last_check_date = current_date
+        end
+
+        if !within_core_hours?(now)
+            if was_active_today && now >= end_of_core_hours(now)
+                $stdout.puts("Core hours ended after active day - shutting down system")
+                shutdown_system
+                exit(0)
+            else
+                $stdout.puts("Not within core hours - waiting")
+            end
         elsif meeting_running?
             $stdout.puts("Meeting is running")
+            was_active_today = true
         else
             $stdout.puts("Joining meeting")
             join_meeting(meeting_id)
@@ -21,6 +38,7 @@ def run(meeting_id)
                 $stdout.puts("Restarting Zoom - video should already be on")
                 start_zoom
             end
+            was_active_today = true
         end
 
         sleep(30)
