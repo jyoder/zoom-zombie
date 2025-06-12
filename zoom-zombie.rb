@@ -1,6 +1,7 @@
 require 'time'
 
 def run(meeting_id)
+    first_start = true
     while true
         if !within_core_hours?(Time.now)
             $stdout.puts("Not within core hours")
@@ -10,7 +11,14 @@ def run(meeting_id)
             $stdout.puts("Joining meeting")
             join_meeting(meeting_id)
             sleep(10)
-            start_zoom_video
+            if first_start
+                $stdout.puts("First time starting Zoom - starting video")
+                start_zoom_and_video
+                first_start = false
+            else
+                $stdout.puts("Restarting Zoom - video should already be on")
+                start_zoom
+            end
         end
 
         sleep(30)
@@ -28,8 +36,14 @@ def join_meeting(meeting_id)
     `open "zoommtg://zoom.us/join?confno=#{meeting_id}"`
 end
 
-def start_zoom_video
-    `osascript start-zoom-video.applescript`
+def start_zoom_and_video
+    `osascript start-zoom.applescript`
+    sleep(2)
+    `osascript toggle-zoom-video.applescript`
+end
+
+def start_zoom
+    `osascript start-zoom.applescript`
 end
 
 def within_core_hours?(now)
