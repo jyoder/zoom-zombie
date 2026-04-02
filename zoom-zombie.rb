@@ -35,8 +35,8 @@ def run(meeting_id)
                 start_zoom_and_video
                 first_start = false
             else
-                $stdout.puts("Restarting Zoom - video should already be on")
-                start_zoom
+                $stdout.puts("Restarting Zoom - ensuring video is enabled")
+                start_zoom_and_video
             end
             was_active_today = true
         end
@@ -82,11 +82,11 @@ def today(now)
 end
 
 def beginning_of_core_hours(now)
-    Time.parse("#{today(now)} 08:30:00 PDT")
+    Time.parse("#{today(now)} 08:00:00 PDT")
 end
 
 def end_of_core_hours(now)
-    Time.parse("#{today(now)} 17:45:00 PDT")
+    Time.parse("#{today(now)} 18:30:00 PDT")
 end
 
 if ARGV.length != 1
